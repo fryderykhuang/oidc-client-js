@@ -40,7 +40,10 @@ export default class OidcClient {
 
     createSigninRequest({
         response_type, scope, redirect_uri, data,
-        prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values} = {},
+        prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values,
+        // custom login
+        app, userid, timestamp, cnonce, sig,
+    } = {},
         stateStore
     ) {
         Log.info("OidcClient.createSigninRequest");
@@ -70,7 +73,9 @@ export default class OidcClient {
                 scope,
                 data,
                 authority,
-                prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values
+                prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values,
+                // custom login
+                app, userid, timestamp, cnonce, sig
             });
 
             var state = request.state;
