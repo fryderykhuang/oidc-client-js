@@ -6,7 +6,43 @@ import Global from './Global';
 
 export default class WebStorageStateStore {
     constructor({prefix = "oidc.", store = Global.localStorage} = {}) {
-        this._store = store;
+        /**
+         * detect IE
+         * returns version of IE or false, if browser is not Internet Explorer
+         */
+        function detectIE() {
+            var ua = window.navigator.userAgent;
+
+            var msie = ua.indexOf('MSIE ');
+            if (msie > 0) {
+                // IE 10 or older => return version number
+                return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+            }
+
+            var trident = ua.indexOf('Trident/');
+            if (trident > 0) {
+                // IE 11 => return version number
+                var rv = ua.indexOf('rv:');
+                return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+            }
+
+            var edge = ua.indexOf('Edge/');
+            if (edge > 0) {
+                // Edge (IE 12+) => return version number
+                return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+            }
+
+            // other browser
+            return false;
+        }
+
+        var iever = detectIE();
+        if (iever !== false && detectIE() < 12) {
+            this._store = window.localStorage; //Global.localStorage;
+        } else {
+            this._store = store;
+        }
+
         this._prefix = prefix;
     }
 
@@ -16,7 +52,7 @@ export default class WebStorageStateStore {
         key = this._prefix + key;
 
         this._store.setItem(key, value);
-        
+
         return Promise.resolve();
     }
 
@@ -26,7 +62,7 @@ export default class WebStorageStateStore {
         key = this._prefix + key;
 
         let item = this._store.getItem(key);
-        
+
         return Promise.resolve(item);
     }
 
@@ -37,7 +73,7 @@ export default class WebStorageStateStore {
 
         let item = this._store.getItem(key);
         this._store.removeItem(key);
-        
+
         return Promise.resolve(item);
     }
 
@@ -48,12 +84,12 @@ export default class WebStorageStateStore {
 
         for (let index = 0; index < this._store.length; index++) {
             let key = this._store.key(index);
-            
+
             if (key.indexOf(this._prefix) === 0) {
                 keys.push(key.substr(this._prefix.length));
             }
         }
-        
+
         return Promise.resolve(keys);
     }
 }
