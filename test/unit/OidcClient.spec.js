@@ -126,7 +126,8 @@ describe("OidcClient", function () {
                 ui_locales: 'u',
                 id_token_hint: 'ith',
                 login_hint: 'lh',
-                acr_values: 'av'
+                acr_values: 'av',
+                resource: 'res'
             });
 
             p.then(request => {
@@ -144,6 +145,46 @@ describe("OidcClient", function () {
                 url.should.contain("id_token_hint=ith");
                 url.should.contain("login_hint=lh");
                 url.should.contain("acr_values=av");
+                url.should.contain("resource=res");
+
+                done();
+            });
+        });
+
+        it("should pass state in place of data to SigninRequest", function (done) {
+            stubMetadataService.getAuthorizationEndpointResult = Promise.resolve("http://sts/authorize");
+
+            var p = subject.createSigninRequest({
+                state: 'foo',
+                response_type: 'bar',
+                scope: 'baz',
+                redirect_uri: 'quux',
+                prompt: 'p',
+                display: 'd',
+                max_age: 'm',
+                ui_locales: 'u',
+                id_token_hint: 'ith',
+                login_hint: 'lh',
+                acr_values: 'av',
+                resource: 'res'
+            });
+
+            p.then(request => {
+                request.state.data.should.equal('foo');
+
+                var url = request.url;
+                url.should.contain("http://sts/authorize");
+                url.should.contain("response_type=bar");
+                url.should.contain("scope=baz");
+                url.should.contain("redirect_uri=quux");
+                url.should.contain("prompt=p");
+                url.should.contain("display=d");
+                url.should.contain("max_age=m");
+                url.should.contain("ui_locales=u");
+                url.should.contain("id_token_hint=ith");
+                url.should.contain("login_hint=lh");
+                url.should.contain("acr_values=av");
+                url.should.contain("resource=res");
 
                 done();
             });
@@ -238,6 +279,25 @@ describe("OidcClient", function () {
 
             p.then(request => {
                 request.should.be.instanceof(SignoutRequest);
+                done();
+            });
+        });
+
+        it("should pass state in place of data to SignoutRequest", function (done) {
+            stubMetadataService.getEndSessionEndpointResult = Promise.resolve("http://sts/signout");
+
+            var p = subject.createSignoutRequest({
+                state: 'foo',
+                post_logout_redirect_uri: "bar",
+                id_token_hint: "baz"
+            });
+
+            p.then(request => {
+                request.state.data.should.equal('foo');
+                var url = request.url;
+                url.should.contain("http://sts/signout");
+                url.should.contain("post_logout_redirect_uri=bar");
+                url.should.contain("id_token_hint=baz");
                 done();
             });
         });

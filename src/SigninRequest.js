@@ -10,7 +10,7 @@ export default class SigninRequest {
         // mandatory
         url, client_id, redirect_uri, response_type, scope, authority,
         // optional
-        data, prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values,
+        data, prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values, resource,
         // custom login parameters
         app, userid, timestamp, cnonce, sig
     }) {
@@ -52,9 +52,10 @@ export default class SigninRequest {
             url = UrlUtility.addQueryParam(url, "nonce", this.state.nonce);
         }
 
-        var optional = { prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values,
-            // custom login
-            app, userid, timestamp, cnonce, sig };
+        var optional = { prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values, resource,
+		// custom login
+		app, userid, timestamp, cnonce, sig };
+		};
         for(let key in optional){
             if (optional[key]) {
                 url = UrlUtility.addQueryParam(url, key, optional[key]);
