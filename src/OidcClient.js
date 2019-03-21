@@ -46,7 +46,8 @@ export default class OidcClient {
         data, state,
         prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values, resource,
 		// custom login
-        app, userid, timestamp, cnonce, sig
+        app, userid, timestamp, cnonce, sig,
+        token, returnurl
 		} = {},
         stateStore
     ) {
@@ -80,7 +81,8 @@ export default class OidcClient {
                 authority,
                 prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values, resource,
                 // custom login
-                app, userid, timestamp, cnonce, sig
+                app, userid, timestamp, cnonce, sig,
+                token, returnurl
             });
 
             var signinState = request.state;

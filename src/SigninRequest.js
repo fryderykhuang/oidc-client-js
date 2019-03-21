@@ -12,7 +12,8 @@ export default class SigninRequest {
         // optional
         data, prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values, resource,
         // custom login parameters
-        app, userid, timestamp, cnonce, sig
+        app, userid, timestamp, cnonce, sig,
+        token, returnurl
     }) {
         if (!url) {
             Log.error("No url passed to SigninRequest");
@@ -54,7 +55,8 @@ export default class SigninRequest {
 
         var optional = { prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values, resource,
 		// custom login
-		app, userid, timestamp, cnonce, sig };
+		app, userid, timestamp, cnonce, sig,
+        token, returnurl
 		};
         for(let key in optional){
             if (optional[key]) {
